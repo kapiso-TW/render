@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
   <title>实时聊天</title>
   <style>
     body { font-family: Arial, sans-serif; }
@@ -14,6 +15,10 @@
 <body>
   <div id="chatBox"></div>
   <input id="messageInput" type="text" placeholder="输入消息...">
+<div class="container">
+  <input required="" id="messageInput" type="text" name="text" class="input">
+  <label class="label">Username</label>
+</div>
   <button id="sendButton">发送</button>
 
   <script src="/socket.io/socket.io.js"></script>
