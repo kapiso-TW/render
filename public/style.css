@@ -49,7 +49,7 @@ body {
 .input-container input[type="text"]:valid~.label {
     top: -20px;
     font-size: 16px;
-    color: #777676;
+    color: #ffffff;
 }
 
 .input-container .underline {
@@ -58,7 +58,7 @@ body {
     left: 0;
     height: 2px;
     width: 100%;
-    background-color: #333;
+    background-color: #ffffff;
     transform: scaleX(0);
     transition: all 0.3s ease;
 }
@@ -71,7 +71,7 @@ body {
 /*------------------------------------------*/
 /*----- button -----*/
 button {
-    background: #fbca1f;
+    background: #deae00;
     font-family: inherit;
     padding: 0.6em 1.3em;
     font-weight: 900;
@@ -80,15 +80,16 @@ button {
     border-radius: 0.4em;
     box-shadow: 0.1em 0.1em;
     cursor: pointer;
-}
-
-button:hover {
+  }
+  
+  button:hover {
     transform: translate(-0.05em, -0.05em);
     box-shadow: 0.15em 0.15em;
-}
-
-button:active {
+  }
+  
+  button:active {
     transform: translate(0.05em, 0.05em);
     box-shadow: 0.05em 0.05em;
-}
+  }
+  
 /*----------------------------------------*/

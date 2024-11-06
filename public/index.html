@@ -1,75 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-  <title>实时聊天</title>
-  <style>
-    body { font-family: Arial, sans-serif; }
-    #chatBox { width: 100%; height: 400px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; }
-    #messageInput { width: 80%; }
-    #sendButton { width: 18%; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>实时聊天</title>
+    <style>
+
+    </style>
 </head>
+
 <body>
-  <div id="chatBox"></div>
-  <input id="messageInput" type="text" placeholder="输入消息...">
-<div class="container">
-  <input required="" id="messageInput" type="text" name="text" class="input">
-  <label class="label">Username</label>
-</div>
-  <button id="sendButton">发送</button>
+    <div id="chatBox"></div>
+    <br>
+    <div style="display: flex; gap: 10px">
+        <div class="input-container">
+            <input type="text" id="input, messageInput" required="" style="color: white;">
+            <label for="input" class="label">Enter Text</label>
+            <div class="underline"></div>
+        </div>
+        <button id="sendButton">發送</button>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
+        // 获取页面元素
+        const chatBox = document.getElementById('chatBox');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
 
-    // 获取页面元素
-    const chatBox = document.getElementById('chatBox');
-    const messageInput = document.getElementById('messageInput');
-    const sendButton = document.getElementById('sendButton');
+        // 显示历史聊天记录
+        socket.on('chatHistory', (history) => {
+            history.forEach(msg => addMessage(msg));
+        });
 
-    // 显示历史聊天记录
-    socket.on('chatHistory', (history) => {
-      history.forEach(msg => addMessage(msg));
-    });
+        // 监听新的聊天消息
+        socket.on('chatMessage', (msg) => {
+            addMessage(msg);
+        });
 
-    // 监听新的聊天消息
-    socket.on('chatMessage', (msg) => {
-      addMessage(msg);
-    });
+        // 监听消息撤回事件
+        socket.on('retractMessage', (messageId) => {
+            const msgElement = document.getElementById(messageId);
+            if (msgElement) {
+                msgElement.textContent = '此消息已被撤回';
+            }
+        });
 
-    // 监听消息撤回事件
-    socket.on('retractMessage', (messageId) => {
-      const msgElement = document.getElementById(messageId);
-      if (msgElement) {
-        msgElement.textContent = '此消息已被撤回';
-      }
-    });
+        // 发送消息
+        sendButton.addEventListener('click', () => {
+            const message = messageInput.value;
+            if (message) {
+                socket.emit('chatMessage', message);
+                messageInput.value = '';
+            }
+        });
 
-    // 发送消息
-    sendButton.addEventListener('click', () => {
-      const message = messageInput.value;
-      if (message) {
-        socket.emit('chatMessage', message);
-        messageInput.value = '';
-      }
-    });
+        // 将消息添加到聊天框
+        function addMessage(msg) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.id = msg.id;
+            messageWrapper.innerHTML = `${msg.text} <button onclick="retractMessage('${msg.id}')">撤回</button>`;
+            chatBox.appendChild(messageWrapper);
+            chatBox.scrollTop = chatBox.scrollHeight; // 自动滚动到最新消息
+        }
 
-    // 将消息添加到聊天框
-    function addMessage(msg) {
-      const messageWrapper = document.createElement('div');
-      messageWrapper.id = msg.id;
-      messageWrapper.innerHTML = `${msg.text} <button onclick="retractMessage('${msg.id}')">撤回</button>`;
-      chatBox.appendChild(messageWrapper);
-      chatBox.scrollTop = chatBox.scrollHeight; // 自动滚动到最新消息
-    }
-
-    // 撤回消息函数
-    function retractMessage(messageId) {
-      socket.emit('retractMessage', messageId);
-    }
-  </script>
+        // 撤回消息函数
+        function retractMessage(messageId) {
+            socket.emit('retractMessage', messageId);
+        }
+    </script>
 </body>
+
 </html>
